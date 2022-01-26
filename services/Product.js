@@ -39,10 +39,20 @@ const update = async (name, quantity, id) => {
   return productUpdated;
 };
 
+const deleteProduct = async (id) => {
+  const productDeleted = await Product.deleteProduct(id);
+  const productExist = await getByName(id);
+  return {
+    productDeleted,
+    productExist,
+  };
+};
+
 module.exports = {
   create,
   getByName,
   getAllProducts,
   getById,
   update,
+  deleteProduct,
 };
