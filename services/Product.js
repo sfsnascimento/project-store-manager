@@ -6,10 +6,22 @@ const getByName = async (name) => {
   return product;
 };
 
+const getAllProducts = async () => {
+  const produts = await Product.getAllProducts();
+
+  return produts;
+};
+
+const getById = async (id) => {
+  const [productById] = await Product.getById(id);
+
+  return productById;
+};
+
 const create = async (name, quantity) => {
   const productExist = await getByName(name);
 
-  if (!productExist) {
+  if (!productExist || productExist.length === 0) {
     const { insertId } = await Product.create(name, quantity);
     return {
       id: insertId,
@@ -24,4 +36,6 @@ const create = async (name, quantity) => {
 module.exports = {
   create,
   getByName,
+  getAllProducts,
+  getById,
 };

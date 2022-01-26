@@ -2,9 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { create } = require('./controllers/Product');
 const validations = require('./middlewares/validations');
-const { getByName } = require('./controllers/Product');
+const { create, getByName, getAllProducts, getById } = require('./controllers/Product');
 
 const app = express();
 
@@ -15,7 +14,11 @@ app.get('/', (_request, response) => {
   response.send();
 });
 
-app.get('/products', getByName);
+app.get('/product', getByName);
+
+app.get('/products', getAllProducts);
+
+app.get('/products/:id', getById);
 
 app.post('/products', validations, create);
 

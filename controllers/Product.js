@@ -8,6 +8,22 @@ const getByName = async (req, res) => {
   res.status(200).json(result);
 };
 
+const getAllProducts = async (req, res) => {
+  const products = await Product.getAllProducts();
+
+  res.status(200).json(products);
+};
+
+const getById = async (req, res) => {
+  const { id } = req.params;
+
+  const productById = await Product.getById(id);
+
+  if (!productById) return res.status(404).json({ message: 'Product not found' });
+
+  res.status(200).json(productById);
+};
+
 const create = async (req, res) => {
   const { name, quantity } = req.body;
 
@@ -21,4 +37,6 @@ const create = async (req, res) => {
 module.exports = {
   create,
   getByName,
+  getAllProducts,
+  getById,
 };
