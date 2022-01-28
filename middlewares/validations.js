@@ -1,13 +1,30 @@
 const ProductValidations = require('../schema/ProductValidations');
 
-module.exports = (req, res, next) => {
+const validateProduct = (req, res, next) => {
   const { name, quantity } = req.body;
 
-  const validateName = ProductValidations.validate(name, quantity);
+  const validate = ProductValidations.validateProduct(name, quantity);
 
-  if (validateName.message) {
-    return res.status(validateName.code).json({ message: validateName.message });
+  if (validate.message) {
+    return res.status(validate.code).json({ message: validate.message });
   }
 
   next();
+};
+
+const validateSales = (req, res, next) => {
+  const [{ product_id, quantity }] = req.body;
+
+  const validate = ProductValidations.validateSales(product_id, quantity);
+
+  if (validate.message) {
+    return res.status(validate.code).json({ message: validate.message });
+  }
+
+  next();
+};
+
+module.exports = {
+  validateProduct,
+  validateSales,
 };
