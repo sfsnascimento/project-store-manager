@@ -14,7 +14,10 @@ const {
   update, 
   deleteProduct } = require('./controllers/Product');
 
-const { registerSales } = require('./controllers/sales');
+const { 
+  registerSales, 
+  getAllSales, 
+  getSaleById } = require('./controllers/sales');
 
 const app = express();
 
@@ -33,6 +36,8 @@ app.put('/products/:id', validateProduct, update);
 app.delete('/products/:id', deleteProduct);
 
 app.post('/sales', validateSales, registerSales);
+app.get('/sales', getAllSales);
+app.get('/sales/:id', getSaleById);
 
 app.listen(process.env.PORT, () => {
   console.log(`Escutando na porta ${process.env.PORT}`);

@@ -1,5 +1,7 @@
 const Sales = require('../models/sales');
 
+const serialize = (sale) => ({ ...sale, saleId: sale.sale_id });
+
 const registerSales = async (sales) => {
   const insertId = await Sales.registerDate();
 
@@ -14,6 +16,20 @@ const registerSales = async (sales) => {
   };
 };
 
+const getAllSales = async () => {
+  const sales = await Sales.getAllSales();
+
+  return sales.map(serialize);
+};
+
+const getSaleById = async (id) => {
+  const sale = await Sales.getSaleById(id);
+
+  return sale;
+};
+
 module.exports = {
   registerSales,
+  getAllSales,
+  getSaleById,
 };
