@@ -1,6 +1,13 @@
 const Sales = require('../models/sales');
 
-const serialize = (sale) => ({ ...sale, saleId: sale.sale_id });
+// const serialize = (sale) => ({ ...sale, saleId: sale.sale_id });
+
+const serialize = (sale) => {
+  const saleId = { saleId: sale.sale_id, ...sale };
+  delete saleId.sale_id;
+
+  return saleId;
+};
 
 const registerSales = async (sales) => {
   const insertId = await Sales.registerDate();
@@ -11,8 +18,8 @@ const registerSales = async (sales) => {
   
   await Promise.all(salesPromises);
 
-  return { 
-  id: insertId, itemsSold: sales,
+  return {
+    id: insertId, itemsSold: sales,
   };
 };
 
@@ -28,8 +35,15 @@ const getSaleById = async (id) => {
   return sale;
 };
 
+const updateSale = async ([{ quantity, product_id }], id) => {
+  const updatedSale = await Sales.updateSale(quantity, product_id, id);
+
+  return updatedSale;
+};
+
 module.exports = {
   registerSales,
   getAllSales,
   getSaleById,
+  updateSale,
 };

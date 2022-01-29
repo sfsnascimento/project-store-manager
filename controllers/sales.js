@@ -24,8 +24,22 @@ const getSaleById = async (req, res) => {
   res.status(200).json(sale);
 };
 
+const updateSale = async (req, res) => {
+  const { id } = req.params;
+  const sale = req.body;
+
+  const updatedSale = await Sales.updateSale(sale, id);
+
+  if (updatedSale.affectedRows === 0) {
+    return res.status(404).json({ message: 'Sale not found' });
+  }
+
+  res.status(200).json({ saleId: id, itemUpdated: sale });
+};
+
 module.exports = {
   registerSales,
   getAllSales,
   getSaleById,
+  updateSale,
 };
