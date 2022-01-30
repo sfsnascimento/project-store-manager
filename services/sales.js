@@ -1,7 +1,5 @@
 const Sales = require('../models/sales');
 
-// const serialize = (sale) => ({ ...sale, saleId: sale.sale_id });
-
 const serialize = (sale) => {
   const saleId = { saleId: sale.sale_id, ...sale };
   delete saleId.sale_id;
@@ -41,9 +39,21 @@ const updateSale = async ([{ quantity, product_id }], id) => {
   return updatedSale;
 };
 
+const deleteSale = async (id) => {
+  const saleDeleted = await Sales.getSaleById(id);
+  
+  const affectedRows = await Sales.deleteSale(id);
+
+  return {
+    saleDeleted,
+    affectedRows,
+  };
+};
+
 module.exports = {
   registerSales,
   getAllSales,
   getSaleById,
   updateSale,
+  deleteSale,
 };

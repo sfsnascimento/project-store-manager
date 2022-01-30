@@ -45,10 +45,22 @@ const updateSale = async (quantity, productId, id) => {
   return updatedSale;
 };
 
+const deleteSale = async (id) => {
+  const [{ affectedRows }] = await connection.execute(
+    'DELETE StoreManager.sales, StoreManager.sales_products'
+    + ' FROM StoreManager.sales'
+    + ' INNER JOIN StoreManager.sales_products'
+    + ' WHERE StoreManager.sales.id = ? AND StoreManager.sales_products.sale_id = ?', [id, id],
+  );
+
+  return affectedRows;
+};
+
 module.exports = {
   registerSales,
   registerDate,
   getAllSales,
   getSaleById,
   updateSale,
+  deleteSale,
 };
