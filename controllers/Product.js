@@ -1,13 +1,5 @@
 const Product = require('../services/Product');
 
-const getByName = async (req, res) => {
-  const { name } = req.body;
-
-  const result = await Product.getByName(name);
-
-  res.status(200).json(result);
-};
-
 const getAllProducts = async (_req, res) => {
   const products = await Product.getAllProducts();
 
@@ -28,8 +20,8 @@ const create = async (req, res) => {
   const { name, quantity } = req.body;
 
   const result = await Product.create(name, quantity);
-
-  if (result === 'productExist') return res.status(409).json({ message: 'Product already exists' });
+  console.log(result);
+  if (!result.id) return res.status(409).json({ message: 'Product already exists' });
 
   res.status(201).json(result);
 };
@@ -63,7 +55,6 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
   create,
-  getByName,
   getAllProducts,
   getById,
   update,

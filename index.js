@@ -7,8 +7,7 @@ const {
   validateSales } = require('./middlewares/validations');
   
 const {
-  create, 
-  getByName, 
+  create,
   getAllProducts, 
   getById, 
   update, 
@@ -30,7 +29,6 @@ app.get('/', (_request, response) => {
   response.send();
 });
 
-app.get('/product', getByName);
 app.get('/products', getAllProducts);
 app.get('/products/:id', getById);
 app.post('/products', validateProduct, create);

@@ -20,7 +20,7 @@ const getById = async (id) => {
   const [productById] = await connection.execute(
     'SELECT * FROM StoreManager.products WHERE id = ?', [id],
   );
-
+ 
   return productById;
 };
 
@@ -44,7 +44,7 @@ const deleteProduct = async (id) => {
   const [productDeleted] = await connection.execute(
     'DELETE FROM StoreManager.products WHERE id = ?', [id],
   );
-  
+
   return productDeleted;
 };
 
