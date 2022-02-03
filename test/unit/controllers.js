@@ -34,141 +34,246 @@ describe('product', () => {
     });
   });
 
-  // describe('quando o produto já existe', () => {
-  //   const product = {
-  //     name: "Martelo de Thor",
-  //     quantity: 10
-  //   };
+  describe('quando o produto já existe', () => {
+    const response = {};
+    const request = {};
+    const execute = [{ id: 1, name: 'Martelo de Thor', quantity: 10 }];
 
-  //   before(async () => {
-  //     const execute = [{ id: 1, name: 'Martelo de Thor', quantity: 10 }];
+    before(async () => {
+      request.body = {
+        name: 'Martelo de Thor',
+        quantity: 10,
+      };
       
-  //     sinon.stub(ProductModels, 'getByName').resolves(execute);
-  //   });
-  //   after(async () => {
-  //     ProductModels.getByName.restore();
-  //   });
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
 
-  //   it('retorna um array com um objeto contendo as chaves id, name e quantity', async () => {
-  //     const response = await ProductServices.create(product.name, product.quantity);
+      sinon.stub(ProductServices, 'create').resolves(execute);
+    });
 
-  //     expect(response).to.be.a('array');
-  //     expect(response[0]).to.have.a.property('id');
-  //     expect(response[0]).to.have.a.property('name');
-  //     expect(response[0]).to.have.a.property('quantity');
-  //   });
-  // });
+    after(async () => {
+      ProductServices.create.restore();
+    });
 
-  // describe('lista todos os produtos no banco de dados', () => {
-  //   before(async () => {
-  //     const execute = [
-  //       {
-  //         "id": 1,
-  //         "name": "martelo",
-  //         "quantity": 10
-  //       },
-  //       {
-  //         "id": 2,
-  //         "name": "traje",
-  //         "quantity": 10
-  //       }
-  //     ];
-      
-  //     sinon.stub(ProductModels, 'getAllProducts').resolves(execute);
-  //   });
-  //   after(async () => {
-  //     ProductModels.getAllProducts.restore();
-  //   });
+    it('é retornado o status com o código 409 e a messagem "product already exists" ', async () => {
+      await ProductControllers.create(request, response);
 
-  //   it('é listado todos os produtos com sucesso', async () => {
-  //     const response = await ProductServices.getAllProducts();
+      expect(response.json.calledWith({ message: 'Product already exists' })).to.be.equal(true);
+      expect(response.status.calledWith(409)).to.be.equal(true);
+    });
+  });
 
-  //     expect(response).to.be.a('array');
-  //   });
+  describe('lista todos os produtos no banco de dados', () => {
+    const response = {};
+    const request = {};
 
-  //   it('o array possui length maior que 0', async () => {
-  //     const response = await ProductServices.getAllProducts();
+    const execute = [
+      {
+        "id": 1,
+        "name": "martelo",
+        "quantity": 10
+      },
+      {
+        "id": 2,
+        "name": "traje",
+        "quantity": 10
+      }
+    ];
 
-  //     expect(response.length).to.be.greaterThan(0);
-  //   });
-  // });
+    before(async () => {
 
-  // describe('busca um produto pelo id', () => {
-  //   const ID = 1;
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+
+      sinon.stub(ProductServices, 'getAllProducts').resolves(execute);
+    });
+
+    after(async () => {
+      ProductServices.getAllProducts.restore();
+    });
+
+    it('é retornado o status com o código 200 e todos os produtos ', async () => {
+      await ProductControllers.getAllProducts(request, response);
+
+      expect(response.json.calledWith(execute)).to.be.equal(true);
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+  });
+
+  describe('busca um produto pelo id e o produto existe', () => {
+    const response = {};
+    const request = {};
+
+    const execute = {
+      "id": 1,
+      "name": "martelo",
+      "quantity": 10
+    };
     
-  //   before(async () => {
-  //     const execute = [{
-  //         "id": 1,
-  //         "name": "martelo",
-  //         "quantity": 10
-  //       }];
-      
-  //     sinon.stub(ProductModels, 'getById').resolves(execute);
-  //   });
-  //   after(async () => {
-  //     ProductModels.getById.restore();
-  //   });
+    before(async () => {
+      request.params = {
+        id: 1,
+      };
 
-  //   it('retorna um objeto', async () => {
-  //     const response = await ProductServices.getById(ID);
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
 
-  //     expect(response).to.be.a('object');
-  //   });
+      sinon.stub(ProductServices, 'getById').resolves(execute);
+    });
 
-  //   it('retorna o produto pelo id', async () => {
-  //     const response = await ProductServices.getById(ID);
+    after(async () => {
+      ProductServices.getById.restore();
+    });
 
-  //     expect(response).to.have.a.property('id');
-  //     expect(response).to.have.a.property('name');
-  //     expect(response).to.have.a.property('quantity');
-  //   });
-  // });
+    it('é retornado o status 200 e o produto', async () => {
+      await ProductControllers.getById(request, response);
 
-  // describe('atualiza um produto', () => {
-  //   const product = {
-  //     "id": 1,
-  //     "name": "martelo",
-  //     "quantity": 10
-  //   };
+      expect(response.json.calledWith(execute)).to.be.equal(true);
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+  });
+  describe('busca um produto pelo id e o produto não existe', () => {
+    const response = {};
+    const request = {};
 
-  //   before(async () => {
-  //     const execute = {
-  //       affectedRows: 1,
-  //     };
+    const execute = undefined;
     
-  //     sinon.stub(ProductModels, 'update').resolves(execute);
-  //   });
-  //   after(async () => {
-  //     ProductModels.update.restore();
-  //   });
+    before(async () => {
+      request.params = {
+        id: 1,
+      };
 
-  //   it('retorna um objeto', async () => {
-  //     const response = await ProductServices.update(product.name, product.quantity, product.id);
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
 
-  //     expect(response).to.be.a('object');
-  //     expect(response).to.have.property('affectedRows');
-  //   });
-  // });
+      sinon.stub(ProductServices, 'getById').resolves(execute);
+    });
+
+    after(async () => {
+      ProductServices.getById.restore();
+    });
+
+    it('é retornado o status 200 e o produto', async () => {
+      await ProductControllers.getById(request, response);
+
+      expect(response.json.calledWith({ message: 'Product not found' })).to.be.equal(true);
+      expect(response.status.calledWith(404)).to.be.equal(true);
+    });
+  });
+
+  describe('atualiza um produto', () => {
+    const response = {};
+    const request = {};
+
+    const called = {
+      name: 'Martelo',
+      quantity: 10,
+    };
+
+    const execute = {
+      affectedRows: 1,
+    };
+    
+    before(async () => {
+      request.params = {
+        id: 1,
+      };
+
+      request.body = {
+        name: 'Martelo',
+        quantity: 10,
+      };
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+
+      sinon.stub(ProductServices, 'update').resolves(execute);
+    });
+
+    after(async () => {
+      ProductServices.update.restore();
+    });
+
+    it('retorna o status 200 e o name e quantity do produto atualizado', async () => {
+      await ProductControllers.update(request, response);
+
+      expect(response.json.calledWith(called)).to.be.equal(true);
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+  });
+
+  describe('tenta atualizar um produto pelo id e ele não existe', () => {
+    const response = {};
+    const request = {};
+
+    const called = {
+      name: 'Martelo',
+      quantity: 10,
+    };
+
+    const execute = {
+      affectedRows: 0,
+    };
+    
+    before(async () => {
+      request.params = {
+        id: 1,
+      };
+
+      request.body = {
+        name: 'Martelo',
+        quantity: 10,
+      };
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+
+      sinon.stub(ProductServices, 'update').resolves(execute);
+    });
+
+    after(async () => {
+      ProductServices.update.restore();
+    });
+
+    it('retorna o status 404 e o name e quantity do produto atualizado', async () => {
+      await ProductControllers.update(request, response);
+
+      expect(response.json.calledWith({ message: 'Product not found' })).to.be.equal(true);
+      expect(response.status.calledWith(404)).to.be.equal(true);
+    });
+  });
 
   // describe('deleta um produto', () => {
-  //   const ID = 1;
+  //   const response = {};
+  //   const request = {};
 
-  //   before(async () => {
-  //     const execute = {
-  //       affectedRows: 1,
-  //     };
+  //   const execute = {
+  //     id: 1,
+  //     name: 'Martelo',
+  //     quantity: 10
+  //   };
     
-  //     sinon.stub(ProductModels, 'deleteProduct').resolves(execute);
+  //   before(async () => {
+  //     request.params = {
+  //       id: 1,
+  //     };
+
+  //     response.status = sinon.stub().returns(response);
+  //     response.json = sinon.stub().returns();
+
+  //     sinon.stub(ProductServices, 'deleteProduct').resolves();
+  //     sinon.stub(ProductServices, 'getById').resolves(execute)
   //   });
+
   //   after(async () => {
-  //     ProductModels.deleteProduct.restore();
+  //     ProductServices.deleteProduct.restore();
   //   });
 
-  //   it('retorna um objeto', async () => {
-  //     const response = await ProductServices.deleteProduct(ID);
+  //   it('retorna o status 200 e o produto deletado', async () => {
+  //     await ProductControllers.deleteProduct(request, response);
 
-  //     expect(response).to.have.property('affectedRows');
-  //     expect(response).to.be.a('object');
+  //     expect(response.json.calledWith(called)).to.be.equal(true);
+  //     expect(response.status.calledWith(200)).to.be.equal(true);
   //   });
   // });
 });
