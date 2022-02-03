@@ -243,37 +243,71 @@ describe('product', () => {
     });
   });
 
-  // describe('deleta um produto', () => {
-  //   const response = {};
-  //   const request = {};
+  describe('deleta um produto', () => {
+    const response = {};
+    const request = {};
 
-  //   const execute = {
-  //     id: 1,
-  //     name: 'Martelo',
-  //     quantity: 10
-  //   };
+    const execute = {
+      id: 1,
+      name: 'Martelo',
+      quantity: 10
+    };
     
-  //   before(async () => {
-  //     request.params = {
-  //       id: 1,
-  //     };
+    const executeDel = { affectedRows: 1 };
 
-  //     response.status = sinon.stub().returns(response);
-  //     response.json = sinon.stub().returns();
+    before(async () => {
+      request.params = {
+        id: 1,
+      };
 
-  //     sinon.stub(ProductServices, 'deleteProduct').resolves();
-  //     sinon.stub(ProductServices, 'getById').resolves(execute)
-  //   });
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
 
-  //   after(async () => {
-  //     ProductServices.deleteProduct.restore();
-  //   });
+      sinon.stub(ProductServices, 'getById').resolves(execute)
+      sinon.stub(ProductServices, 'deleteProduct').resolves(executeDel);
+    });
 
-  //   it('retorna o status 200 e o produto deletado', async () => {
-  //     await ProductControllers.deleteProduct(request, response);
+    after(async () => {
+      ProductServices.getById.restore();
+      ProductServices.deleteProduct.restore();
+    });
 
-  //     expect(response.json.calledWith(called)).to.be.equal(true);
-  //     expect(response.status.calledWith(200)).to.be.equal(true);
-  //   });
-  // });
+    it('retorna o status 200 e o produto deletado', async () => {
+      await ProductControllers.deleteProduct(request, response);
+
+      expect(response.json.calledWith(execute)).to.be.equal(true);
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+  });
+
+  describe('tenta deletar um produto e ele não existe', () => {
+    const response = {};
+    const request = {};
+
+    const execute = undefined;
+    
+    const executeDel = { affectedRows: 0 };
+
+    before(async () => {
+      request.params = {
+        id: 1,
+      };
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+
+      sinon.stub(ProductServices, 'getById').resolves(execute)
+    });
+
+    after(async () => {
+      ProductServices.getById.restore();
+    });
+
+    it('retorna o status 200 e o produto deletado', async () => {
+      await ProductControllers.deleteProduct(request, response);
+
+      expect(response.json.calledWith({ message: 'Product not found' })).to.be.equal(true);
+      expect(response.status.calledWith(404)).to.be.equal(true);
+    });
+  });
 });
