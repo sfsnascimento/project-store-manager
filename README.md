@@ -14,4 +14,4 @@ A API construída trata-se de um sistema de gerenciamento de vendas, onde será 
 
 3. Rode o projeoto
 
--`npm start`
+- `npm start`
