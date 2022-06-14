@@ -1,3 +1,6 @@
+# Projeto realizado durante curso na Trybe - Módulo de Back-end
+
+## O que foi desenvolvido
 A API construída trata-se de um sistema de gerenciamento de vendas, onde será possível criar, visualizar, deletar e atualizar produtos e vendas. Foi utilizado o banco MySQL para a gestão de dados. Além disso, a API foi construída utilizando a arquitetura RESTful.
 
 # Instruções para rodar o projeto
